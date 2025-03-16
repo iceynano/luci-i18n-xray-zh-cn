@@ -104,10 +104,17 @@ jobs:
           ./scripts/feeds install -a
           cd -
 
+      - name: Build po2lmo Tool
+        run: |
+          cd tools/po2lmo
+          make
+          cd -
+
       - name: Build Packages
         run: |
           cd "$SDK_HOME"
           make defconfig
+          export PATH="${{ github.workspace }}/tools/po2lmo/src:$PATH"
           make package/${PACKAGE_NAME}/{clean,compile} V=s
           find "$SDK_HOME/bin/" -type f -name "*.ipk" -exec ls -lh {} \;
           cd -
